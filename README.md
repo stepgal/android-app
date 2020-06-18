@@ -1,1 +1,1 @@
-# android-app
+# Shop2020 Android Application
