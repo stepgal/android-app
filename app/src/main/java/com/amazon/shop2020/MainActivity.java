@@ -72,8 +72,7 @@ public class MainActivity extends AppCompatActivity implements ItemsAdapter.Item
             public void onClick(View v)
             {
                 SharedPreferences.Editor editor = sp.edit();
-                editor.putBoolean("isActiveUser", false);
-                editor.apply();
+                editor.putBoolean("isActiveUser", false).apply();
                 finish();
                 startLoginActivity();
             }

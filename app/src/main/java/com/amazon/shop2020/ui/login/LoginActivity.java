@@ -155,34 +155,35 @@ public class LoginActivity extends AppCompatActivity
                     @Override
                     public void onResponse(JSONObject response)
                     {
+                        loadingProgressBar.setVisibility(View.GONE);
                         try
                         {
                             String status = response.get("status").toString();
                             if (status.equalsIgnoreCase("OK"))
                             {
-                                JSONObject user = (JSONObject) response.get("user");
-                                if (user != null)
+                                if(response.has("user"))
                                 {
-                                    String a_password = user.get("password").toString();
-                                    if (!a_password.equals(password))
+                                    loginViewModel.login(usernameEditText.getText().toString(), passwordEditText.getText().toString());
+                                }
+                                else
+                                {
+                                    if(response.has("message"))
                                     {
-                                        Toast.makeText(getApplicationContext(), "email or password is wrong!", Toast.LENGTH_SHORT).show();
-                                    }
-                                    else
-                                    {
-                                        loginViewModel.login(usernameEditText.getText().toString(), passwordEditText.getText().toString());
+                                        String message = response.get("message").toString();
+                                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                                     }
                                 }
+                                return;
                             }
-                            else
-                            {
-                                loginViewModel.login("", "");
-                                Toast.makeText(getApplicationContext(), "email or password is wrong!", Toast.LENGTH_SHORT).show();
-                            }
+
+
+                            loginViewModel.login("", "");
+                            Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
                         }
                         catch (JSONException e)
                         {
                             e.printStackTrace();
+                            Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }, new Response.ErrorListener()
@@ -190,6 +191,7 @@ public class LoginActivity extends AppCompatActivity
                     @Override
                     public void onErrorResponse(VolleyError error)
                     {
+                        loadingProgressBar.setVisibility(View.GONE);
                         Log.e(TAG, "Error: " + error.getMessage());
                         Toast.makeText(getApplicationContext(), "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
